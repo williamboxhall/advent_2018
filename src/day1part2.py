@@ -3,18 +3,14 @@ import sys, itertools
 
 with open(sys.argv[1]) as input:
 	deltas = map(int, input.readlines())
-	deltas_cycled = itertools.cycle(deltas)
-
 	frequency = 0
 	seen = set()
 
-	for delta in deltas_cycled:
-		frequency = delta + frequency
+	for delta in itertools.cycle(deltas):
+		frequency += delta
 		if frequency in seen:
-			print("found:" + str(frequency))
+			print frequency
 			break
 		else:
-			print("nope:" + str(frequency))
 			seen.add(frequency)
-
 	
