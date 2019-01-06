@@ -3,42 +3,26 @@ import sys, itertools, functools, time, collections
 
 with open(sys.argv[1]) as input:
 	#deltas = itertools.cycle(map(int, input.readlines()))
-	# counter = 0 
+	counter = 0 
 
-	# def timed(x):
-	# 	global counter
-	# 	counter += 1
-	# 	print(counter)
-	# 	return x
+	def timed(x):
+		global counter
+		counter += 1
+		print(counter)
+		return x
 
-	#deltas = map(timed, itertools.cycle(map(int, input.readlines())))
+	deltas = map(timed, itertools.cycle(map(int, input.readlines())))
 	#deltas = itertools.cycle([1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12, 13, -14, 15, -16])
-	deltas = [1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12, 13, -14, 15, -16]
-	print(deltas)
+	#deltas = [1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12, 13, -14, 15, -16]
 	#deltas_cycled = itertools.cycle(deltas)
 	#deltas_cycled = deltas
 
 	# todo start with zero?
 	#deltas = itertools.chain([0], deltas)
-	sums = list(itertools.accumulate(deltas, lambda x,y: x+y))
-	print(sums)
-
-	foo = list(map(lambda x: {x}, sums))
-	print(foo)
-
-	# def fun(x,y):
-	# 	print(x)
-	# 	print(y)
-	# 	union = x.union(y)
-	# 	print(union)
-	# 	return union
-
-	seen = list(itertools.chain([set()], itertools.accumulate(foo, lambda x,y: x.union(y))))
-	print(seen)
-
-	zipped = list(zip(seen, sums))
-	print(zipped)
-	dups = map(lambda x: x[1], filter(lambda x: x[1] in x[0], zipped))
+	sums = itertools.accumulate(itertools.chain([0], deltas), lambda x,y: x+y)
+	seen = itertools.accumulate(itertools.chain([set()], map(lambda x: {x}, sums)), lambda x,y: x.union(y))
+	zipped = zip(seen, sums)
+	dups = filter(lambda x: x[1] in x[0], zipped)
 	print(next(dups))
 
 
