@@ -2,10 +2,10 @@
 import sys, itertools, functools, time, collections
 
 with open(sys.argv[1]) as input:
-	#deltas = map(int, input.readlines())
-	deltas = [1, 1, 1, -1, -1, -1]
-	#deltas_cycled = itertools.cycle(deltas)
-	deltas_cycled = deltas
+	deltas = map(int, input.readlines())
+	#deltas = [1, 1, 1, -1, -1, -1]
+	deltas_cycled = itertools.cycle(deltas)
+	#deltas_cycled = deltas
 
 	frequencies = itertools.accumulate(deltas_cycled, lambda x,y: x+y)
 
@@ -28,11 +28,8 @@ with open(sys.argv[1]) as input:
 	counts = map(lambda x: x[1], frequencies_and_counts)
 
 	def duplicate_frequencies(counts): #map in, list of dupes out. needs ifilter?
-		print("counts.items")
-		print(counts.items())
-		values = filter(counts.items(), lambda x: x[1] > 1).values()
-		print("values")
-		print(values)
+		dupe_items = filter(lambda x: x[1] > 1, counts.items())
+		values = list(map(lambda x: x[0], dupe_items))
 
 		return values
 
