@@ -2,29 +2,40 @@
 import sys, itertools, functools, time, collections
 
 with open(sys.argv[1]) as input:
-	#deltas = itertools.cycle(map(int, input.readlines()))
-	counter = 0 
+	deltas = itertools.cycle(map(int, input.readlines()))
+	# counter = 0 
 
-	def timed(x):
-		global counter
-		counter += 1
-		print(counter)
-		return x
+	# def timed(x):
+	# 	global counter
+	# 	counter += 1
+	# 	print(counter)
+	# 	return x
 
-	deltas = map(timed, itertools.cycle(map(int, input.readlines())))
+	# deltas = map(timed, itertools.cycle(map(int, input.readlines())))
 	#deltas = itertools.cycle([1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12, 13, -14, 15, -16])
-	#deltas = [1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12, 13, -14, 15, -16]
+	#deltas = [1, -2, 3, 1, 1, -2]
 	#deltas_cycled = itertools.cycle(deltas)
 	#deltas_cycled = deltas
 
 	# todo start with zero?
 	#deltas = itertools.chain([0], deltas)
-	sums = itertools.accumulate(itertools.chain([0], deltas), lambda x,y: x+y)
-	seen = itertools.accumulate(itertools.chain([set()], map(lambda x: {x}, sums)), lambda x,y: x.union(y))
-	zipped = zip(seen, sums)
-	dups = filter(lambda x: x[1] in x[0], zipped)
-	print(next(dups))
+	sums1, sums2 = itertools.tee(itertools.accumulate(deltas, lambda x,y: x+y))
+	seen = itertools.chain([set()], itertools.accumulate(map(lambda x: {x}, sums1), lambda x,y: x.union(y)))
+	#seen = list(seen)
+	#print(seen)
+	zipped = zip(seen, sums2)
+	#zipped = list(zipped)
+	#print(zipped)
+	# print("============")
 
+	# def contains(x):
+	# 	if x[1] in x[0]:
+	# 		print(x)
+	# 		return True
+	# 	return False
+
+	dups = map(lambda x: x[1], filter(lambda x: x[1] in x[0], zipped))
+	print(next(dups))
 
     # def deltas = Iterator.continually(data).flatten
     # def sums = deltas.scanLeft(0)(_ + _)
