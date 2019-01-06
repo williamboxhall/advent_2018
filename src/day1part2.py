@@ -6,10 +6,13 @@ with open(sys.argv[1]) as input:
 	frequency = 0
 	seen = set()
 
+	counter = 0
 	for delta in itertools.cycle(deltas):
+		counter += 1
+		print(counter)
 		frequency += delta
 		if frequency in seen:
-			print frequency
+			print(frequency) #145801 steps
 			break
 		else:
 			seen.add(frequency)

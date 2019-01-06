@@ -2,46 +2,74 @@
 import sys, itertools, functools, time, collections
 
 with open(sys.argv[1]) as input:
-	deltas = map(int, input.readlines())
-	#deltas = [1, 1, 1, -1, -1, -1]
-	deltas_cycled = itertools.cycle(deltas)
+	#deltas = itertools.cycle(map(int, input.readlines()))
+	counter = 0 
+
+	def timed(x):
+		global counter
+		counter += 1
+		print(counter)
+		return x
+
+	deltas = map(timed, itertools.cycle(map(int, input.readlines())))
+	#deltas = itertools.cycle([1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12, 13, -14, 15, -16])
+	#deltas_cycled = itertools.cycle(deltas)
 	#deltas_cycled = deltas
 
-	frequencies = itertools.accumulate(deltas_cycled, lambda x,y: x+y)
+	sums = itertools.accumulate(deltas, lambda x,y: x+y)
+	sums_as_sets = map(lambda x: {x}, sums)
+	sums_as_sets_intialised = itertools.chain([set()], sums_as_sets)
 
-	frequencies_and_empty_counts = map(lambda x: (x, collections.defaultdict(lambda: 0, {})), frequencies)
+	#print(list(sums_as_sets_intialised))
 
-	def reducer(old, new):
-		old_freq = old[0]
-		new_freq = new[0]
-		old_dict = old[1]
-		new_dict = new[1]
+	seen = itertools.accumulate(sums_as_sets_intialised, lambda x,y: x.union(y))
 
-		updated_dict = old_dict.copy()
-		if (old_dict[old_freq] == 0):
-			updated_dict[old_freq] = 1
-		updated_dict[new_freq] += 1
+	dups = map(lambda x: x[1], filter(lambda x: x[1] in x[0], zip(seen, sums)))
+	print(next(dups))
 
-		return (new_freq, collections.defaultdict(lambda: 0, updated_dict))
 
-	frequencies_and_counts = itertools.accumulate(frequencies_and_empty_counts, reducer)
-	counts = map(lambda x: x[1], frequencies_and_counts)
+    # def deltas = Iterator.continually(data).flatten
+    # def sums = deltas.scanLeft(0)(_ + _)
+    # def seen = sums.scanLeft(Set.empty)(_ + _)
+    # def dups = (seen zip sums).filter(_ contains _).map((_, sum) => sum)
+    # print(dups.next)
 
-	def duplicate_frequencies(counts): #map in, list of dupes out. needs ifilter?
-		dupe_items = filter(lambda x: x[1] > 1, counts.items())
-		values = list(map(lambda x: x[0], dupe_items))
 
-		return values
+	# frequencies_and_empty_counts = map(lambda x: (x, collections.defaultdict(lambda: 0, {})), frequencies)
 
-	duplicates = map(duplicate_frequencies, counts)
+	# def reducer(old, new):
+	# 	old_freq = old[0]
+	# 	new_freq = new[0]
+	# 	old_dict = old[1]
+	# 	new_dict = new[1]
 
-	def predicate(dupe_list): # this is a map like {1: 1, 2: 2, 3: 1}
-		return len(dupe_list) > 0
+	# 	updated_dict = old_dict.copy()
+	# 	if (old_dict[old_freq] == 0):
+	# 		updated_dict[old_freq] = 1
+	# 	updated_dict[new_freq] += 1
 
-	first_duplicate = next(x for x in duplicates if predicate(x))
+	# 	print(len(updated_dict))
 
-	print("done")
-	print(first_duplicate)
+	# 	return (new_freq, collections.defaultdict(lambda: 0, updated_dict))
+
+	# frequencies_and_counts = itertools.accumulate(frequencies_and_empty_counts, reducer)
+	# counts = map(lambda x: x[1], frequencies_and_counts)
+
+	# def duplicate_frequencies(counts): #map in, list of dupes out. needs ifilter?
+	# 	dupe_items = filter(lambda x: x[1] > 1, counts.items())
+	# 	values = list(map(lambda x: x[0], dupe_items))
+
+	# 	return values
+
+	# duplicates = map(duplicate_frequencies, counts)
+
+	# def predicate(dupe_list): # this is a map like {1: 1, 2: 2, 3: 1}
+	# 	return len(dupe_list) > 0
+
+	# first_duplicate = next(x for x in duplicates if predicate(x))
+
+	# print("done")
+	# print(first_duplicate)
 
 
 	#def pred2(item):
